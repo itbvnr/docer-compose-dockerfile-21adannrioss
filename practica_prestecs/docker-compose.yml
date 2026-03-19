@@ -18,25 +18,24 @@ services:
       MYSQL_DATABASE: db_dawe
       MYSQL_USER: user_dawe
       MYSQL_PASSWORD: pwd
-    restart: always  # Reinicia el contenidor al fallar o després d'un reboot de l'host
     volumes:
       # PERSISTENCIA: Named Volume para que los datos no mueran al borrar el contenedor
       - dades_mariadb:/var/lib/mysql
       # AUTO-INICIALIZACIÓN: Mapeamos nuestro SQL a la carpeta mágica de MariaDB
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-
+    restart: always  # Reinicia el contenidor al fallar o després d'un reboot de l'host
   # 2. Servei de Web (Apache + PHP)
   # Reemplaza a PHPMyAdmin y PHP standalone
   c_web:
-    build: .   # Busca el Dockerfile en la carpeta actual
+    build: ./app # Busca el Dockerfile en la carpeta app
     container_name: c_web
     ports:
-      - "8080:80"  # Mapeig de port: -p 8080:80
+      - "8080:80" # Mapeig de port: -p 8080:80
     volumes:
       # BIND MOUNT: Sincroniza la carpeta local con la del servidor web
       - ./app:/var/www/html
     depends_on:
-      - c_bd3  # No arranques la web fins que la BD estigui llista
+      - c_bd3 # No arranques la web fins que la BD estigui llista
 
 volumes:
-  dades_mariadb:   # Declarar el volumen con nombre
+  dades_mariadb: # Declarar el volumen con nombre
